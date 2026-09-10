@@ -17,7 +17,7 @@ public class Game {
             // Continue match?
             while (true) {
                 try {
-                    continueMatchInput = IO.readln("Do you want to continue the match? y/n : ");
+                    continueMatchInput = IO.readln("Do you want to continue the match? y/n : ").toLowerCase();
                     checkValidChoiceInput(continueMatchInput);
                     break;
                 } catch (IllegalArgumentException e) {
@@ -25,7 +25,7 @@ public class Game {
                 }
             }
 
-            if (!continueMatchInput.toLowerCase().equals("y")) {
+            if (!continueMatchInput.equals("y")) {
                 getWinner(players);
                 break;
             }
@@ -62,11 +62,11 @@ public class Game {
 
     private static void getWinner(Player[] players) {
         if (players[0].getScore() > players[1].getScore()) {
-            IO.println(players[0].getFullName() + " won with " + players[0].getScore() + " score against " + players[1].getScore());
+            IO.println(players[0].getFullName() + " won with a " + players[0].getScore() + " score against " + players[1].getFullName() + "'s " + players[1].getScore());
         } else if (players[0].getScore() < players[1].getScore()) {
-            IO.println(players[1].getFullName() + " won with " + players[1].getScore() + " score against " + players[0].getScore());
+            IO.println(players[1].getFullName() + " won with a " + players[1].getScore() + " score against " + players[0].getFullName() + "'s " + players[0].getScore());
         } else {
-            IO.println("It's a tie!");
+            IO.println("It's a tie! Both " + players[0].getFullName() + " and " + players[1].getFullName() + " got " + players[0].getScore());
         }
     }
 
@@ -88,7 +88,7 @@ public class Game {
         }
     }
 
-    private static void checkValidChoiceInput(String input) throws IllegalArgumentException {
+    public static void checkValidChoiceInput(String input) throws IllegalArgumentException {
         if (!input.equals("y") && !input.equals("n")) {
             throw new IllegalArgumentException("(y/n)");
         }
