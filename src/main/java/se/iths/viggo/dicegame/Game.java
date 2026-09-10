@@ -1,25 +1,30 @@
 package se.iths.viggo.dicegame;
 
-import java.util.Random;
-
 public class Game {
-    Random random = new Random();
-
     public void play() {
-        Player[] players = createPlayers();
+        final Player[] players = createPlayers();
+        final int rollCount = 2;
+        String continueMatchInput = "";
 
+        // Game loop
         while (true) {
-            // Roll dice twice
-            for (int i = 0; i < 2; i++) {
-                rollDice(players[0]);
-            }
-
-            for (int i = 0; i < 2; i++) {
-                rollDice(players[1]);
+            for (Player player : players) {
+                for (int i = 0; i < rollCount; i++) {
+                    rollDice(player);
+                }
             }
 
             // Continue match?
-            String continueMatchInput = IO.readln("Do you want to continue the match? y/n : ");
+            while (true) {
+                try {
+                    continueMatchInput = IO.readln("Do you want to continue the match? y/n : ");
+                    checkValidChoiceInput(continueMatchInput);
+                    break;
+                } catch (IllegalArgumentException e) {
+                    IO.println(e.getMessage());
+                }
+            }
+
             if (!continueMatchInput.toLowerCase().equals("y")) {
                 getWinner(players);
                 break;
@@ -33,7 +38,10 @@ public class Game {
         IO.readln("Press ENTER to roll!");
 
         int roll = Dice.roll();
-        IO.println(player.getFullName() + " rolled a " + roll + "\n");
+        IO.println("----------------------------------------");
+        IO.println(player.getFullName() + " rolled a " + roll);
+        IO.println("----------------------------------------");
+
 
         player.addToScore(roll);
     }
@@ -64,12 +72,25 @@ public class Game {
 
     private static String handlePlayerNameInput(String prompt) {
         while (true) {
-            String input = IO.readln(prompt);
-            if (input.isBlank()) {
-                IO.println("Can not be blank.");
-            } else {
+            try {
+                String input = IO.readln(prompt);
+                checkValidNameInput(input);
                 return input;
+            } catch (IllegalArgumentException e) {
+                IO.println(e.getMessage());
             }
+        }
+    }
+
+    private static void checkValidNameInput(String input) throws IllegalArgumentException {
+        if (input.isBlank()) {
+            throw new IllegalArgumentException("It can not be blank.");
+        }
+    }
+
+    private static void checkValidChoiceInput(String input) throws IllegalArgumentException {
+        if (!input.equals("y") && !input.equals("n")) {
+            throw new IllegalArgumentException("(y/n)");
         }
     }
 }
